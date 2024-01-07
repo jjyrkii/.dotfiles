@@ -23,12 +23,12 @@ if command -v snap &> /dev/null; then
     done
     echo "All Snap packages have been removed."
 
-    sudo systemctl stop snapd > /dev/null 2>&1
-    sudo systemctl disable snapd > /dev/null 2>&1
-    sudo systemctl mask snapd > /dev/null 2>&1
-    sudo apt purge snapd -y > /dev/null 2>&1
-    sudo apt autoremove > /dev/null 2>&1
-    sudo apt-mark hold snapd > /dev/null 2>&1
+    sudo systemctl stop snapd
+    sudo systemctl disable snapd
+    sudo systemctl mask snapd
+    sudo apt purge snapd -y
+    sudo apt autoremove
+    sudo apt-mark hold snapd
     echo "Snap service removed"
 
     rm -rf $HOME/snap/ 
@@ -36,5 +36,87 @@ if command -v snap &> /dev/null; then
     sudo rm -rf /var/snap
     sudo rm -rf /var/lib/snapd
     echo "Removed snap files"
+    
+    sudo cat <<EOF | sudo tee /etc/apt/preferences.d/nosnap.pref
+Package: snapd
+Pin: release a=*
+Pin-Priority: -10
+EOF
 fi
 
+sudo apt update
+sudo apt upgrade
+
+packages=(
+	"zsh"
+	"build-essential"
+	"cmake"
+	"unzip"
+	"gettext"
+	"ripgrep"
+	"python3-pip"
+)
+sudo apt install -y "${packages[@]}"
+
+if [ ! -d "$HOME/.config" ]; then
+	mkdir "$HOME/.config"
+fi
+
+if [ "$SHELL" != "/usr/bin/zsh" ]; then
+		echo "######################"
+		echo "######################"
+		echo "######################"
+		echo "######################"
+		echo "######################"
+		echo "######################"
+		echo "Changing default shell"
+		echo "######################"
+		chsh -s /usr/bin/zsh
+	if [ ! -d "$HOME/.oh-my-zsh" ]; then
+		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+	fi
+fi
+
+if ! command -v nvim &> /dev/null; then
+	echo "Installing neovim"
+	git clone https://github.com/neovim/neovim
+	cd neovim && make CMAKE_BUILD_TYPE=Release
+	git checkout stable
+	sudo make install
+	sudo rm -rf neovim
+fi
+
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
+
+
+paths=(
+	".zshrc"
+       	".config/nvim"
+       	".config/tmux"
+       	".config/git"
+)
+
+for path in "${paths[@]}"; do
+    if [ -e "$HOME/$path" ]; then
+	    if [ ! -L "$HOME/$path" ]; then
+		    rm -rf "$HOME/$path"
+	    else
+		    break
+	    fi
+    fi
+    ln -s "$(pwd)/$path" "$HOME/$path"
+done
+
+if [ ! -d  "$HOME/.nvm" ]; then
+	sudo apt purge nodejs
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | sh
+	source "$HOME/.zshrc"
+	nvm install 21
+fi
+
+if ! [ -x "$(command -v cargo)" ]; then
+	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+	source "$HOME/.cargo/env"
+fi
