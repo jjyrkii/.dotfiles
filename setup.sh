@@ -130,4 +130,4 @@ if ! command -v go &> /dev/null; then
 fi
 
 sudo apt autoremove -y
-git update-index --assume-unchanged
+git update-index --assume-unchanged "$pwd/.config/git/config"
