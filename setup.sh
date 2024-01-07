@@ -122,5 +122,5 @@ if ! command -v cargo &> /dev/null; then
 	source "$HOME/.cargo/env"
 fi
 
-sudo apt autoremove -v
+sudo apt autoremove -y
 git update-index --assume-unchanged
