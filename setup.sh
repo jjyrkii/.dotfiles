@@ -55,6 +55,7 @@ packages=(
 	"gettext"
 	"ripgrep"
 	"python3-pip"
+	"gh"
 )
 sudo apt install -y "${packages[@]}"
 
@@ -116,7 +117,10 @@ if [ ! -d  "$HOME/.nvm" ]; then
 	nvm install 21
 fi
 
-if ! [ -x "$(command -v cargo)" ]; then
+if ! command -v cargo &> /dev/null; then
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	source "$HOME/.cargo/env"
 fi
+
+sudo apt autoremove -v
+git update-index --assume-unchanged
