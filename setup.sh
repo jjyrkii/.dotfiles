@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pwd=$(pwd)
+
 # Make sure snap is gone
 if command -v snap &> /dev/null; then
     echo "Removing snap"
@@ -14,9 +16,9 @@ if command -v snap &> /dev/null; then
 
         # Loop through the list and remove each Snap package
         for package in $snap_list; do
-            sudo snap remove $package > /dev/null 2>&1
+            sudo snap remove "$package" > /dev/null 2>&1
             # Check if the removal was successful
-            if [ $? -eq 0 ]; then
+            if command -v snap; then
                 echo "Removed: $package"
             fi
         done
@@ -27,11 +29,11 @@ if command -v snap &> /dev/null; then
     sudo systemctl disable snapd
     sudo systemctl mask snapd
     sudo apt purge snapd -y
-    sudo apt autoremove
+    sudo apt autoremove -y
     sudo apt-mark hold snapd
     echo "Snap service removed"
 
-    rm -rf $HOME/snap/ 
+    rm -rf "$HOME/snap/"
     sudo rm -rf /snap
     sudo rm -rf /var/snap
     sudo rm -rf /var/lib/snapd
@@ -102,12 +104,12 @@ paths=(
 for path in "${paths[@]}"; do
     if [ -e "$HOME/$path" ]; then
 	    if [ ! -L "$HOME/$path" ]; then
-		    rm -rf "$HOME/$path"
+		    rm -rf "$HOME/${path:?}"
 	    else
 		    break
 	    fi
     fi
-    ln -s "$(pwd)/$path" "$HOME/$path"
+    ln -s "$pwd/$path" "$HOME/$path"
 done
 
 if [ ! -d  "$HOME/.nvm" ]; then
@@ -119,7 +121,12 @@ fi
 
 if ! command -v cargo &> /dev/null; then
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-	source "$HOME/.cargo/env"
+fi
+
+if ! command -v go &> /dev/null; then
+	wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz
+	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.5.linux-amd64.tar.gz
+	export PATH=$PATH:/usr/local/go/bin
 fi
 
 sudo apt autoremove -y
