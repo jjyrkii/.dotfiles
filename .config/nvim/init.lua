@@ -170,6 +170,7 @@ require("lazy").setup({
         section_separators = "",
       },
     },
+    -- sections = { lualine_c = { require("auto-session.lib").current_session_name } },
   },
 
   {
@@ -295,6 +296,11 @@ require("telescope").setup {
         ["<C-u>"] = false,
         ["<C-d>"] = false,
       },
+    },
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
     },
   },
 }

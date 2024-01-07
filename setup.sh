@@ -47,7 +47,7 @@ EOF
 fi
 
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 packages=(
 	"zsh"
@@ -66,15 +66,6 @@ if [ ! -d "$HOME/.config" ]; then
 fi
 
 if [ "$SHELL" != "/usr/bin/zsh" ]; then
-		echo "######################"
-		echo "######################"
-		echo "######################"
-		echo "######################"
-		echo "######################"
-		echo "######################"
-		echo "Changing default shell"
-		echo "######################"
-		chsh -s /usr/bin/zsh
 	if [ ! -d "$HOME/.oh-my-zsh" ]; then
 		sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 	fi
@@ -86,7 +77,7 @@ if ! command -v nvim &> /dev/null; then
 	cd neovim && make CMAKE_BUILD_TYPE=Release
 	git checkout stable
 	sudo make install
-	sudo rm -rf neovim
+	sudo rm -rf "$pwd/neovim"
 fi
 
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
@@ -131,3 +122,13 @@ fi
 
 sudo apt autoremove -y
 git update-index --assume-unchanged "$pwd/.config/git/config"
+echo "######################"
+echo "######################"
+echo "######################"
+echo "######################"
+echo "######################"
+echo "######################"
+echo "Changing default shell"
+echo "######################"
+chsh -s /usr/bin/zsh
+echo "###### ALL DONE ######"
