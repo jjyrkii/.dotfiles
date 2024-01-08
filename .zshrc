@@ -22,6 +22,7 @@ HISTCONTROL=ignoreboth:erasedups
 plugins=(
     sudo
     git 
+    git-prompt
 )
 
 source $ZSH/oh-my-zsh.sh

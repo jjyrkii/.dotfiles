@@ -92,6 +92,7 @@ paths=(
        	".config/git"
 )
 
+
 for path in "${paths[@]}"; do
     if [ -e "$HOME/$path" ]; then
 	    if [ ! -L "$HOME/$path" ]; then
@@ -121,6 +122,7 @@ if ! command -v go &> /dev/null; then
 fi
 
 sudo apt autoremove -y
+# hallo
 git update-index --assume-unchanged "$pwd/.config/git/config"
 echo "######################"
 echo "######################"
