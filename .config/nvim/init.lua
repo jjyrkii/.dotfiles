@@ -1,3 +1,5 @@
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
@@ -300,7 +302,7 @@ require("telescope").setup {
   },
   pickers = {
     find_files = {
-      hidden = true,
+      --      hidden = true,
     },
   },
 }
@@ -378,7 +380,7 @@ vim.keymap.set("n", "<leader>sr", require("telescope.builtin").resume, { desc = 
 vim.defer_fn(function()
   require("nvim-treesitter.configs").setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { "lua", "bash", },
+    ensure_installed = { "lua", "bash", "typescript", "javascript" },
 
     modules = {},
 
