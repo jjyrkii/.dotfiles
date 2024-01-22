@@ -46,7 +46,7 @@ Pin-Priority: -10
 EOF
 fi
 
-sudo apt update
+sudo apt update -y
 sudo apt upgrade -y
 
 packages=(
@@ -58,6 +58,7 @@ packages=(
 	"ripgrep"
 	"python3-pip"
 	"gh"
+	"tmux"
 )
 sudo apt install -y "${packages[@]}"
 
@@ -119,10 +120,10 @@ if ! command -v go &> /dev/null; then
 	wget https://go.dev/dl/go1.21.5.linux-amd64.tar.gz
 	sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.21.5.linux-amd64.tar.gz
 	export PATH=$PATH:/usr/local/go/bin
+	rm -rf go1.21.5.linux-amd64.tar.gz
 fi
 
 sudo apt autoremove -y
-# hallo
 git update-index --assume-unchanged "$pwd/.config/git/config"
 echo "######################"
 echo "######################"
